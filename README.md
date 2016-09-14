@@ -101,3 +101,27 @@ Will get you the same settings as
 
 If you have any problems with or questions about this image, please contact me
 through a [GitHub issue](https://github.com/dperson/samba/issues).
+
+# docker-compose.yml example
+
+```
+version: '2'
+
+services:
+    samba:
+        container_name: samba.dev
+        build: ./samba
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+        networks:
+            - devnet
+        command:
+            - "-u user1;badpassword;1000"
+            - "-w WORKGROUP"
+            - "-n"
+            - "-s test;/srv;no;no;no;user1;user1"
+
+networks:
+    devnet:
+        driver: bridge
+```

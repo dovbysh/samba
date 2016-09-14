@@ -64,6 +64,17 @@ share() { local share="$1" path="$2" browsable=${3:-yes} ro=${4:-yes} \
         echo "   valid users = $(tr ',' ' ' <<< $users)" >>$file
     [[ ${admins:-""} && ! ${admins:-""} =~ none ]] &&
         echo "   admin users = $(tr ',' ' ' <<< $admins)" >>$file
+    [[ ${admins:-""} && ! ${admins:-""} =~ none ]] &&
+        echo "   force user = $admins" >>$file
+    [[ ${admins:-""} && ! ${admins:-""} =~ none ]] &&
+        echo "   force group = $admins" >>$file
+    [[ ${admins:-""} && ! ${admins:-""} =~ none ]] &&
+        chown $admins:$admins $path
+	echo "   create mask = 0664" >>$file
+	echo "   force create mode = 0664" >>$file
+#	echo "   directory mask = 02775" >>$file
+#	echo "   force directory mode = 02775" >>$file
+	echo "   hide dot files = no" >>$file
     echo -e "" >>$file
 }
 
@@ -92,6 +103,7 @@ timezone() { local timezone="${1:-EST5EDT}"
 # Return: user added to container
 user() { local name="${1}" passwd="${2}" id="${3:-""}"
     useradd "$name" -M ${id:+-u $id}
+    echo "$passwd" | tee - | passwd -q "$name"
     echo "$passwd" | tee - | smbpasswd -s -a "$name"
 }
 
